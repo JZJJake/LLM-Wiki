@@ -4,9 +4,9 @@
 
 [Karpathy的 LLM Wiki](https://x.com/karpathy/status/2039805659525644595) ([规格说明](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)) 的开源实现。
 
-我构建这个工具是因为研究文件夹中积累有用资料的速度远远超过了我手动维护摘要、链接和引用更新的速度。LLM Wiki 将这些编辑工作交给 Claude，让我能专注于资料来源的选择和分析。
+我构建这个工具是因为研究文件夹中积累有用资料的速度远远超过了我手动维护摘要、链接和引用更新的速度。LLM Wiki 将这些编辑工作交给 DeepSeek/Cline，让我能专注于资料来源的选择和分析。
 
-将它指向一个文件夹，启动本地应用，然后通过 MCP 连接 Claude。从那时起，Claude 就会读取你的资料，撰写维基页面，并保持链接和引用的同步。
+将它指向一个文件夹，启动本地应用，然后通过 MCP 连接 DeepSeek/Cline。从那时起，DeepSeek/Cline 就会读取你的资料，撰写维基页面，并保持链接和引用的同步。
 
 ![LLM Wiki — 带有引用和目录的编译维基页面](wiki-page.png)
 
@@ -14,8 +14,8 @@
 
 1. **你有一个文件夹** — PDF、笔记、文章、电子表格。你现有的研究资料。
 2. **LLM Wiki 索引它** — 提取文本，为搜索分块，并构建本地的 SQLite 索引。源文件会保留在原处。
-3. **Claude 通过 MCP 连接** — 读取资料，在 `wiki/` 下撰写维基页面，维护交叉引用和脚注引用。
-4. **维基不断完善** — 随着 Claude 读取工作区中更多的内容并撰写更多页面，摘要、实体页面和交叉引用会不断积累，而不是每次对话都从头开始重新推导。
+3. **DeepSeek/Cline 通过 MCP 连接** — 读取资料，在 `wiki/` 下撰写维基页面，维护交叉引用和脚注引用。
+4. **维基不断完善** — 随着 DeepSeek/Cline 读取工作区中更多的内容并撰写更多页面，摘要、实体页面和交叉引用会不断积累，而不是每次对话都从头开始重新推导。
 
 ## 快速开始
 
@@ -45,15 +45,15 @@ cd web && npm install && cd ..
 
 打开 [localhost:3000](http://localhost:3000)。你的文件已被索引，维基的脚手架已搭建完成，随时可以使用。
 
-### 连接 Claude
+### 连接 DeepSeek/Cline
 
 ```bash
 ./llmwiki mcp-config ~/research
 ```
 
-这将打印出一段用于 `claude_desktop_config.json` (Claude Desktop) 或 `.claude/settings.json` (Claude Code) 的 JSON 配置片段。一个工作区作为一个 MCP 服务器条目运行，所以如果你有多个研究文件夹，请为每个文件夹添加一个条目。
+这将打印出一段用于 `cline_mcp_settings.json` (DeepSeek/Cline Desktop) 或 `cline_mcp_settings.json` (DeepSeek/Cline Code) 的 JSON 配置片段。一个工作区作为一个 MCP 服务器条目运行，所以如果你有多个研究文件夹，请为每个文件夹添加一个条目。
 
-然后告诉 Claude: *"阅读指南，然后提取我的资料并开始构建维基。"*
+然后告诉 DeepSeek/Cline: *"阅读指南，然后提取我的资料并开始构建维基。"*
 
 ### 一键启动 (Linux/Mac)
 
@@ -70,8 +70,8 @@ cd web && npm install && cd ..
 | `llmwiki open <文件夹>` | 初始化 + 启动服务 + 打开浏览器 |
 | `llmwiki init <文件夹>` | 创建 `.llmwiki/` + `wiki/`，索引现有文件 |
 | `llmwiki serve <文件夹>` | 在端口 8000 启动 API，端口 3000 启动 web |
-| `llmwiki mcp <文件夹>` | 运行标准输入输出的 MCP 服务器 (用于 Claude 配置) |
-| `llmwiki mcp-config <文件夹>` | 打印 `claude_desktop_config.json` 代码片段 |
+| `llmwiki mcp <文件夹>` | 运行标准输入输出的 MCP 服务器 (用于 DeepSeek/Cline 配置) |
+| `llmwiki mcp-config <文件夹>` | 打印 `cline_mcp_settings.json` 代码片段 |
 | `llmwiki reindex <文件夹>` | 从磁盘重建索引 |
 
 ## 磁盘上的变化
@@ -93,14 +93,14 @@ LLM Wiki 会向你的文件夹中添加两样东西。你的源文件不会被�
     cache/
 ```
 
-- `wiki/` — 普通的 Markdown 文件。你可以在任何编辑器中编辑它们。Claude 通过 MCP 撰写和更新它们。
+- `wiki/` — 普通的 Markdown 文件。你可以在任何编辑器中编辑它们。DeepSeek/Cline 通过 MCP 撰写和更新它们。
 - `.llmwiki/` — SQLite 搜索索引和处理后的产物。你可以随时删除它；`llmwiki reindex` 会从源文件重新构建它。
 
 默认情况下，索引、存储和文件写入都在你的机器上本地进行。不需要任何云服务。
 
-## Claude 如何与工作区互动
+## DeepSeek/Cline 如何与工作区互动
 
-连接后，Claude 拥有以下工具：
+连接后，DeepSeek/Cline 拥有以下工具：
 
 | 工具 | 描述 |
 |------|-------------|
@@ -110,7 +110,7 @@ LLM Wiki 会向你的文件夹中添加两样东西。你的源文件不会被�
 | `write` | 创建维基页面，使用 `str_replace` 编辑，追加内容。SVG/CSV 资产 |
 | `delete` | 通过路径或 glob 模式删除文档 |
 
-所有的写入都会先落盘，然后更新搜索索引。如果 Claude 创建了 `/wiki/concepts/attention.md`，该文件会立即出现在磁盘上。
+所有的写入都会先落盘，然后更新搜索索引。如果 DeepSeek/Cline 创建了 `/wiki/concepts/attention.md`，该文件会立即出现在磁盘上。
 
 ## 架构
 
@@ -121,7 +121,7 @@ LLM Wiki 会向你的文件夹中添加两样东西。你的源文件不会被�
 └──────────────┘     └──────┬───────┘     └──────────────┘
                             │
                      ┌──────┴───────┐
-                     │  MCP Server  │◀──── Claude Desktop / Code
+                     │  MCP Server  │◀──── Cline / DeepSeek / DeepSeek/Cline
                      │  (标准流)    │
                      └──────────────┘
                             │

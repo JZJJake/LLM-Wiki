@@ -6,7 +6,7 @@ Usage:
     llmwiki init <workspace>         创建 .llmwiki/ + wiki/，索引文件
     llmwiki serve <workspace>        在本地启动 API + Web 服务
     llmwiki mcp <workspace>          运行标准流 MCP 服务器 (用于 Claude 配置)
-    llmwiki mcp-config <workspace>   打印 claude_desktop_config.json 配置片段
+    llmwiki mcp-config <workspace>   打印 cline_mcp_settings.json 配置片段
     llmwiki reindex <workspace>      强制完全重建 index.db 索引库
 """
 
@@ -273,7 +273,7 @@ def cmd_mcp_config(workspace: str, name: str | None = None) -> None:
         }
     }
 
-    print(f"# Add to claude_desktop_config.json:")
+    print(f"# Add to cline_mcp_settings.json:")
     print(f"# This MCP server is scoped to: {ws}")
     print(f"# To use another workspace, add another server entry.")
     print()
